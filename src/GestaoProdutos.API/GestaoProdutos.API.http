@@ -1,0 +1,16 @@
+@GestaoProdutos.API_HostAddress = http://localhost:5106
+
+GET {{GestaoProdutos.API_HostAddress}}/api/v1/pedidos/1
+Accept: application/json
+
+###
+
+GET {{GestaoProdutos.API_HostAddress}}/api/v1/pedidos?status=Criado
+Accept: application/json
+
+###
+
+POST {{GestaoProdutos.API_HostAddress}}/api/v1/pedidos
+Accept: application/json
+
+###
