@@ -54,7 +54,7 @@ namespace GestaoProdutos.Tests.API.Validators
         public void Should_Have_Error_When_Itens_Equal_Zero()
         {
             var model = new OrderRequestModelFake().Generate();
-            model.Itens = new List<OrderItemRequestModel>();
+            model.Itens = [];
 
             var result = _validator.TestValidate(model);
 

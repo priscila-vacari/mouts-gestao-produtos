@@ -275,9 +275,54 @@
             Classe de requisição do pedido
             </summary>
         </member>
+        <member name="P:GestaoProdutos.API.Models.OrderRequestModel.OrderId">
+            <summary>
+            Id do pedido
+            </summary>
+        </member>
+        <member name="P:GestaoProdutos.API.Models.OrderRequestModel.ClientId">
+            <summary>
+            Id do cliente
+            </summary>
+        </member>
+        <member name="P:GestaoProdutos.API.Models.OrderRequestModel.Itens">
+            <summary>
+            Itens do pedido
+            </summary>
+        </member>
         <member name="T:GestaoProdutos.API.Models.OrderResponseModel">
             <summary>
             Classe de resposta do pedido
+            </summary>
+        </member>
+        <member name="P:GestaoProdutos.API.Models.OrderResponseModel.Id">
+            <summary>
+            Id
+            </summary>
+        </member>
+        <member name="P:GestaoProdutos.API.Models.OrderResponseModel.OrderId">
+            <summary>
+            Id do pedido
+            </summary>
+        </member>
+        <member name="P:GestaoProdutos.API.Models.OrderResponseModel.ClientId">
+            <summary>
+            Id do cliente
+            </summary>
+        </member>
+        <member name="P:GestaoProdutos.API.Models.OrderResponseModel.Tax">
+            <summary>
+            Valor do imposto
+            </summary>
+        </member>
+        <member name="P:GestaoProdutos.API.Models.OrderResponseModel.Itens">
+            <summary>
+            Itens
+            </summary>
+        </member>
+        <member name="P:GestaoProdutos.API.Models.OrderResponseModel.Status">
+            <summary>
+            Status
             </summary>
         </member>
         <member name="T:GestaoProdutos.API.Swagger.ConfigureSwaggerOptions">

@@ -98,7 +98,7 @@ namespace GestaoProdutos.Tests.Application.Services
         public async Task GetByStatusAsync_ShouldReturnNotFoundException_WhenOrderNotExists()
         {
             OrderStatus status = OrderStatus.Criado;
-            List<Order> orders = new List<Order>();
+            List<Order> orders = [];
 
             _orderRepository.GetWhereAsyncIncludes(Arg.Any<Expression<Func<Order, bool>>>(), Arg.Any<Expression<Func<Order, object>>[]>()).Returns(orders);
 
