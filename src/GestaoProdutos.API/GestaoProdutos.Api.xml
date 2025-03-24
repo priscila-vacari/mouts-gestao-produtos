@@ -325,6 +325,11 @@
             Status
             </summary>
         </member>
+        <member name="T:GestaoProdutos.API.Program">
+            <summary>
+            Classe principal do programa
+            </summary>
+        </member>
         <member name="T:GestaoProdutos.API.Swagger.ConfigureSwaggerOptions">
             <summary>
             Classe de configuração de swagger
