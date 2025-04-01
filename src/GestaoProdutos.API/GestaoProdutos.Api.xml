@@ -65,6 +65,18 @@
             <param name="request"></param>
             <returns>Retorna o pedido criado</returns>
         </member>
+        <member name="M:GestaoProdutos.API.Controllers.v1.OrderController.UpdateOrder(System.Int32,GestaoProdutos.API.Models.OrderRequestModel)">
+            <summary>
+            Atualiza um pedido
+            </summary>
+            <param name="request"></param>
+        </member>
+        <member name="M:GestaoProdutos.API.Controllers.v1.OrderController.DeleteOrderById(System.Int32)">
+            <summary>
+            Excluir o pedido pelo id
+            </summary>
+            <param name="id"></param>
+        </member>
         <member name="T:GestaoProdutos.API.Filters.FieldError">
             <summary>
             Objeto de erros de validação em campos

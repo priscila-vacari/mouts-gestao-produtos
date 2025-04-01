@@ -35,7 +35,7 @@ namespace GestaoProdutos.InfraEstructure.Repositories
             foreach (var include in includes)
                 query = query.Include(include);
 
-            return await query.FirstOrDefaultAsync(e => EF.Property<int>(e, "Id") == id);
+            return await query.AsNoTracking().FirstOrDefaultAsync(e => EF.Property<int>(e, "Id") == id);
         }
 
         public async Task<T?> GetByKeysAsync(params object[] keys)
@@ -84,6 +84,14 @@ namespace GestaoProdutos.InfraEstructure.Repositories
                 _dbSet.Remove(entity);
                 await _context.SaveChangesAsync();
             }
+        }
+
+        [ExcludeFromCodeCoverage]
+        public async Task DeleteRangeAsync(List<T> entities)
+        {
+            _logger.LogInformation("Excluindo os registros.");
+            _dbSet.RemoveRange(entities);
+            await _context.SaveChangesAsync();
         }
     }
 }

@@ -24,6 +24,7 @@ namespace GestaoProdutos.Tests.Application.Services
         private readonly ICalculateTaxStrategy _calculateTaxStrategy;
         private readonly IServiceProvider _serviceProvider;
         private readonly IRepository<Order> _orderRepository;
+        private readonly IRepository<OrderItem> _orderItemRepository;
         private readonly OrderService _orderService;
 
         public OrderServiceTests()
@@ -34,6 +35,7 @@ namespace GestaoProdutos.Tests.Application.Services
             _calculateTaxStrategy = Substitute.For<ICalculateTaxStrategy>();
             _serviceProvider = Substitute.For<IServiceProvider>();
             _orderRepository = Substitute.For<IRepository<Order>>();
+            _orderItemRepository = Substitute.For<IRepository<OrderItem>>();
 
             var serviceScope = Substitute.For<IServiceScope>();
             serviceScope.ServiceProvider.Returns(_serviceProvider);
@@ -44,7 +46,7 @@ namespace GestaoProdutos.Tests.Application.Services
             _serviceProvider.GetService(typeof(IServiceScopeFactory)).Returns(scopeFactory);
             _serviceProvider.GetService(typeof(IRepository<Order>)).Returns(_orderRepository);
 
-            _orderService = new OrderService(_logger, _mapper, _calculateTaxFactory, _serviceProvider);
+            _orderService = new OrderService(_logger, _mapper, _calculateTaxFactory, _orderRepository, _orderItemRepository);
         }
 
         [Fact]
@@ -147,5 +149,80 @@ namespace GestaoProdutos.Tests.Application.Services
 
             await act.Should().ThrowAsync<DuplicateEntryException>().WithMessage("Pedido já cadastrado.");
         }
+
+        [Fact]
+        public async Task UpdateAsync_ShouldUpdateOrder_WhenIsValid()
+        {
+            var id = 1;
+            var orderDto = new OrderDTOFake().Generate();
+
+            var order = new Order
+            {
+                Id = id,
+                OrderId = orderDto.OrderId,
+                ClientId = orderDto.ClientId,
+                Tax = orderDto.Tax,
+                Status = orderDto.Status,
+                Itens = [.. orderDto.Itens.Select(i => new OrderItem { Id = i.Id, ProductId = i.ProductId, Quantity = i.Quantity, Amount = i.Amount })]
+            };
+
+            _mapper.Map<Order>(orderDto).Returns(order);
+
+            _orderRepository.GetByIdAsyncIncludes(id, Arg.Any<Expression<Func<Order, object>>[]>()).Returns(Task.FromResult(order));
+
+            _calculateTaxFactory.CreateStrategy().Returns(_calculateTaxStrategy);
+
+            _mapper.Map<OrderDTO>(order).Returns(orderDto);
+
+            await _orderService.UpdateAsync(order.Id, orderDto);
+
+            await _orderRepository.Received(1).UpdateAsync(order);
+        }
+
+        [Fact]
+        public async Task UpdateAsync_ShouldReturnNotFoundException_WhenOrderNotExists()
+        {
+            var id = 1;
+            var orderDto = new OrderDTOFake().Generate();
+            orderDto.Id = id;
+
+            var ordersExists = new OrderFake().Generate(3);
+
+            _orderRepository.GetWhereAsyncIncludes(Arg.Any<Expression<Func<Order, bool>>>(), Arg.Any<Expression<Func<Order, object>>[]>()).Returns(ordersExists);
+
+            var act = async () => await _orderService.UpdateAsync(id, orderDto);
+
+            await act.Should().ThrowAsync<NotFoundException>().WithMessage("Pedido não encontrado para o id.");
+        }
+
+        [Fact]
+        public async Task DeleteAsyncAsync_ShouldReturnSuccess_WhenOrderExists()
+        {
+            var id = 1;
+            var order = new OrderFake().Generate();
+
+            var orderDTO = new OrderDTO { Id = id, OrderId = order.OrderId, ClientId = order.ClientId, Tax = order.Tax, Status = order.Status };
+
+            _orderRepository.GetByIdAsync(id).Returns(Task.FromResult(order));
+            _mapper.Map<OrderDTO>(order).Returns(orderDTO);
+
+            await _orderService.DeleteAsync(id);
+
+            await _orderRepository.Received(1).DeleteAsync(order.Id);
+        }
+
+        [Fact]
+        public async Task DeleteAsyncAsync_ShouldReturnNotFoundException_WhenOrderNotExists()
+        {
+            var id = 1;
+            Order? order = null;
+
+            _orderRepository.GetByIdAsync(id).Returns(Task.FromResult(order));
+
+            var act = async () => await _orderService.GetByIdAsync(id);
+
+            await act.Should().ThrowAsync<NotFoundException>().WithMessage("Pedido não encontrado para o id.");
+        }
+
     }
 }

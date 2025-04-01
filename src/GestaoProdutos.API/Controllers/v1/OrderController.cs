@@ -82,5 +82,42 @@ namespace GestaoProdutos.API.Controllers.v1
             var response = _mapper.Map<OrderCreateResponseModel>(orderResponse);
             return CreatedAtAction(nameof(AddOrder), response);
         }
+
+        /// <summary>
+        /// Atualiza um pedido
+        /// </summary>
+        /// <param name="request"></param>
+        [HttpPut("{id}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status409Conflict)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> UpdateOrder([FromRoute] int id, [FromBody] OrderRequestModel request)
+        {
+            _logger.LogInformation("Atualizar o pedido {id}.", id);
+
+            var orderRequest = _mapper.Map<OrderDTO>(request);
+
+            await _orderService.UpdateAsync(id, orderRequest);
+
+            return NoContent();
+        }
+
+        /// <summary>
+        /// Excluir o pedido pelo id
+        /// </summary>
+        /// <param name="id"></param>
+        [HttpDelete("{id}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> DeleteOrderById(int id)
+        {
+            _logger.LogInformation("Excluir o pedido {id}", id);
+
+            await _orderService.DeleteAsync(id);
+
+            return NoContent();
+        }
     }
 }

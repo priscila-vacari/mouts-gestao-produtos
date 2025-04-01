@@ -8,5 +8,7 @@ namespace GestaoProdutos.Application.Interfaces
         Task<OrderDTO> GetByIdAsync(int id);
         Task<IEnumerable<OrderDTO>> GetByStatusAsync(OrderStatus status);
         Task<OrderDTO> AddAsync(OrderDTO request);
+        Task UpdateAsync(int id, OrderDTO request);
+        Task DeleteAsync(int id);
     }
 }

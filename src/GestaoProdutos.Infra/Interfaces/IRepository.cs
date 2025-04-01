@@ -13,5 +13,6 @@ namespace GestaoProdutos.Infra.Interfaces
         Task AddAsync(T entity);
         Task UpdateAsync(T entity);
         Task DeleteAsync(params object[] keys);
+        Task DeleteRangeAsync(List<T> entities);
     }
 }

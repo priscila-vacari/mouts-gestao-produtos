@@ -97,5 +97,39 @@ namespace GestaoProdutos.Tests.API.Controllers
             createdResult.StatusCode.Should().Be(201);
             createdResult.Value.Should().BeEquivalentTo(createdOrder);
         }
+
+        [Theory]
+        [InlineData(1)]
+        public async Task UpdateOrder_ReturnsNoContentResult_WhenOrderExists(int id)
+        {
+            var request = new OrderRequestModelFake().Generate();
+            var orderDto = new OrderDTOFakeData(id: id).Generate();
+
+            var createdOrder = new OrderCreateResponseModel { Id = orderDto.Id, Status = orderDto.Status };
+
+            _mapper.Map<OrderDTO>(request).Returns(orderDto);
+            _orderService.UpdateAsync(id, orderDto).Returns(Task.CompletedTask);
+            _mapper.Map<OrderCreateResponseModel>(orderDto).Returns(createdOrder);
+
+            var result = await _controller.UpdateOrder(id, request);
+
+            var noContentResult = result as NoContentResult;
+            noContentResult.Should().NotBeNull();
+            noContentResult.StatusCode.Should().Be(204);
+        }
+
+        [Theory]
+        [InlineData(1)]
+        public async Task DeleteOrderById_ReturnsNoContentResult_WhenOrderExists(int id)
+        {
+            _orderService.DeleteAsync(id).Returns(Task.CompletedTask);
+
+            var result = await _controller.DeleteOrderById(id);
+
+            var noContentResult = result as NoContentResult;
+            noContentResult.Should().NotBeNull();
+            noContentResult.StatusCode.Should().Be(204);
+        }
+
     }
 }
